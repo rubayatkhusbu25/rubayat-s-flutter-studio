@@ -25,7 +25,7 @@ const Hero = () => {
               Flutter Developer
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto lg:mx-0 mb-8 animate-slide-up stagger-2">
-              Passionate about building beautiful, high-performance mobile applications 
+              Passionate about building amazing, high-performance mobile applications 
               with clean architecture and exceptional user experiences.
             </p>
 
