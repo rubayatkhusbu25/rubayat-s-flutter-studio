@@ -1,10 +1,78 @@
+import { useState } from "react";
 import Section from "@/components/Section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Github, Linkedin, Mail, MapPin, Phone, Send } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Send, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import emailjs from "@emailjs/browser";
+
+const EMAILJS_SERVICE_ID = "service_b4ec1dd";
+const EMAILJS_TEMPLATE_ID = "template_kpoag1i";
+const EMAILJS_PUBLIC_KEY = "bGpFZqP0eFuf80iS3";
 
 const Contact = () => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject || "No subject",
+          message: formData.message,
+        },
+        EMAILJS_PUBLIC_KEY
+      );
+
+      toast({
+        title: "Message sent!",
+        description: "Thank you for reaching out. I'll get back to you soon!",
+      });
+
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      toast({
+        title: "Failed to send",
+        description: "Something went wrong. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Section
       id="contact"
@@ -65,32 +133,64 @@ const Contact = () => {
 
         {/* Contact Form */}
         <div className="bg-card rounded-2xl border border-border p-6 md:p-8">
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Name</label>
-                <Input placeholder="Your name" />
+                <label className="text-sm font-medium">Name *</label>
+                <Input 
+                  name="name"
+                  placeholder="Your name" 
+                  value={formData.name}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Email</label>
-                <Input type="email" placeholder="your@email.com" />
+                <label className="text-sm font-medium">Email *</label>
+                <Input 
+                  name="email"
+                  type="email" 
+                  placeholder="your@email.com" 
+                  value={formData.email}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Subject</label>
-              <Input placeholder="What's this about?" />
+              <Input 
+                name="subject"
+                placeholder="What's this about?" 
+                value={formData.subject}
+                onChange={handleChange}
+                disabled={isSubmitting}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Message</label>
-              <Textarea placeholder="Your message..." rows={5} />
+              <label className="text-sm font-medium">Message *</label>
+              <Textarea 
+                name="message"
+                placeholder="Your message..." 
+                rows={5} 
+                value={formData.message}
+                onChange={handleChange}
+                disabled={isSubmitting}
+              />
             </div>
-            <Button type="submit" size="lg" className="w-full">
-              <Send className="w-4 h-4 mr-2" />
-              Send Message
+            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  Send Message
+                </>
+              )}
             </Button>
-            <p className="text-xs text-center text-muted-foreground">
-              Form submission coming soon
-            </p>
           </form>
         </div>
       </div>
