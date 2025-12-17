@@ -5,7 +5,7 @@ import { Smartphone, Palette, Flame, Bug, Zap, Code2 } from "lucide-react";
 const services = [
   {
     title: "Flutter App Development",
-    description: "Building high-performance, cross-platform mobile applications with beautiful UI and smooth animations.",
+    description: "Building high-performance, cross-platform mobile applications with amazing UI and smooth animations.",
     icon: Smartphone,
   },
   {

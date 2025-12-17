@@ -26,7 +26,7 @@ const About = () => {
           <p className="text-muted-foreground leading-relaxed">
             My expertise spans from implementing complex state management solutions using 
             <span className="text-primary font-medium"> GetX and Riverpod</span> to crafting 
-            beautiful UI designs that convert Figma mockups into pixel-perfect Flutter interfaces. 
+            amazing UI designs that convert Figma mockups into pixel-perfect Flutter interfaces.
             I'm passionate about clean architecture, performance optimization, and staying current 
             with the latest Flutter ecosystem updates.
           </p>
