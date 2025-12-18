@@ -1,8 +1,25 @@
 import { ArrowDown, Download, Github, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import profileImage from "@/assets/profile.png";
+import { useState, useEffect } from "react";
+
+const titles = ["Flutter Developer", "Software Engineer"];
 
 const Hero = () => {
+  const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setCurrentTitleIndex((prev) => (prev + 1) % titles.length);
+        setIsAnimating(false);
+      }, 500);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <section className="min-h-screen flex items-center justify-center pt-20 relative overflow-hidden">
       {/* Background decoration */}
@@ -21,8 +38,16 @@ const Hero = () => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-4 animate-slide-up">
               Rubayat Islam
             </h1>
-            <h2 className="text-2xl md:text-3xl font-display gradient-text mb-6 animate-slide-up stagger-1">
-              Flutter Developer
+            <h2 className="text-2xl md:text-3xl font-display gradient-text mb-6 animate-slide-up stagger-1 h-10 overflow-hidden">
+              <span 
+                className={`inline-block transition-all duration-500 ${
+                  isAnimating 
+                    ? "opacity-0 translate-y-8" 
+                    : "opacity-100 translate-y-0"
+                }`}
+              >
+                {titles[currentTitleIndex]}
+              </span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto lg:mx-0 mb-8 animate-slide-up stagger-2">
               Passionate about building amazing, high-performance mobile applications 
